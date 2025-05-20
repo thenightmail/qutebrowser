@@ -7,7 +7,7 @@
 import collections
 import dataclasses
 import functools
-from typing import Union
+from typing import Union, TypeVar as T
 from qutebrowser.qt.core import pyqtSlot, QUrl
 
 from qutebrowser.config import config
@@ -116,17 +116,17 @@ class TreeTabbedBrowser(TabbedBrowser):
     is_treetabbedbrowser = True
     _undo_class = _TreeUndoEntry
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._tree_tab_child_rel_idx = 0
         self._tree_tab_sibling_rel_idx = 0
         self._tree_tab_toplevel_rel_idx = 0
 
-    def _create_tab_widget(self):
+    def _create_tab_widget(self) -> TreeTabWidget:
         """Return the tab widget that can display a tree structure."""
         return TreeTabWidget(self._win_id, parent=self)
 
-    def _remove_tab(self, tab, *, add_undo=True, new_undo=True, crashed=False, recursive=False):
+    def _remove_tab(self, tab, *, add_undo=True, new_undo=True, crashed=False, recursive=False) -> None:
         """Handle children positioning after a tab is removed."""
         if not tab.url().isEmpty() and tab.url().isValid() and add_undo:
             self._add_undo_entry(tab, new_undo)
@@ -218,7 +218,7 @@ class TreeTabbedBrowser(TabbedBrowser):
 
         self.widget.tree_tab_update()
 
-    def undo(self, depth=1):
+    def undo(self, depth=1) -> None:
         """Undo removing of a tab or tabs."""
         super().undo(depth)
         self.widget.tree_tab_update()
@@ -390,7 +390,7 @@ class TreeTabbedBrowser(TabbedBrowser):
         def rel_depth(n) -> int:
             return n.depth - node.depth
 
-        levels: dict[int, list] = collections.defaultdict(list)
+        levels: dict[int, list['notree.Node[T]']] = collections.defaultdict(list)
         for d in node.traverse(render_collapsed=False):
             r_depth = rel_depth(d)
             levels[r_depth].append(d)
