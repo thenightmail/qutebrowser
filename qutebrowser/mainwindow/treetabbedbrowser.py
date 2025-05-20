@@ -368,17 +368,17 @@ class TreeTabbedBrowser(TabbedBrowser):
         if not background:
             self._reset_stack_counters()
 
-    def _reset_stack_counters(self):
+    def _reset_stack_counters(self) -> None:
         self._tree_tab_child_rel_idx = 0
         self._tree_tab_sibling_rel_idx = 0
         self._tree_tab_toplevel_rel_idx = 0
 
     @pyqtSlot(int)
-    def _on_current_changed(self, idx):
+    def _on_current_changed(self, idx) -> None:
         super()._on_current_changed(idx)
         self._reset_stack_counters()
 
-    def cycle_hide_tab(self, node):
+    def cycle_hide_tab(self, node) -> None:
         """Utility function for tree_tab_cycle_hide command."""
         # height = node.height  # height is always rel_height
         if node.collapsed:
@@ -387,7 +387,7 @@ class TreeTabbedBrowser(TabbedBrowser):
                 descendent.collapsed = False
             return
 
-        def rel_depth(n):
+        def rel_depth(n) -> int:
             return n.depth - node.depth
 
         levels: dict[int, list] = collections.defaultdict(list)

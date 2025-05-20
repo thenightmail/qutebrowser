@@ -4,6 +4,7 @@
 
 """Extension of TabWidget for tree-tab functionality."""
 
+from typing import Optional, Any
 from qutebrowser.mainwindow.tabwidget import TabWidget
 from qutebrowser.misc.notree import Node
 from qutebrowser.utils import log
@@ -21,7 +22,7 @@ class TreeTabWidget(TabWidget):
         self.tree_root = Node(None)
         super().__init__(win_id, parent)
 
-    def get_tab_fields(self, idx):
+    def get_tab_fields(self, idx: int) -> dict[str, Any]:
         """Add tree field data to normal tab field data."""
         fields = super().get_tab_fields(idx)
 
