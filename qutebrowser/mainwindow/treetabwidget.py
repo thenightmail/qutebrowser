@@ -17,7 +17,7 @@ class TreeTabWidget(TabWidget):
     positioning of tabs according to tree structure.
     """
 
-    def __init__(self, win_id, parent=None):
+    def __init__(self, win_id: int, parent:Any=None) -> None:
         # root of the tab tree, common for all tabs in the window
         self.tree_root = Node(None)
         super().__init__(win_id, parent)
@@ -95,7 +95,7 @@ class TreeTabWidget(TabWidget):
 
         return fields
 
-    def update_tree_tab_positions(self):
+    def update_tree_tab_positions(self) -> None:
         """Update tab positions according to the tree structure."""
         nodes = self.tree_root.traverse(render_collapsed=False)
         for idx, node in enumerate(nodes):
@@ -103,7 +103,7 @@ class TreeTabWidget(TabWidget):
                 cur_idx = self.indexOf(node.value)
                 self.tabBar().moveTab(cur_idx, idx-1)
 
-    def update_tree_tab_visibility(self):
+    def update_tree_tab_visibility(self) -> None:
         """Hide collapsed tabs and show uncollapsed ones.
 
         Sync the internal tree to the tabs the user can actually see.
@@ -130,7 +130,7 @@ class TreeTabWidget(TabWidget):
                 self.insertTab(parent_idx + 1, tab, icon, name)
                 tab.node.parent = parent  # insertTab resets node
 
-    def tree_tab_update(self):
+    def tree_tab_update(self) -> None:
         """Update titles and positions."""
         with self._disable_tab_title_updates():
             self.update_tree_tab_visibility()

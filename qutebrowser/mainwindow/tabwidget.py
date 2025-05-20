@@ -39,7 +39,7 @@ class TabWidget(QTabWidget):
     MUTE_STRING = '[M] '
     AUDIBLE_STRING = '[A] '
 
-    def __init__(self, win_id, parent=None):
+    def __init__(self, win_id: int, parent=None) -> None:
         super().__init__(parent)
         self._tabbed_browser = parent
         bar = TabBar(win_id, self)
