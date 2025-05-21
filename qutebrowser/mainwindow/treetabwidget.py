@@ -17,14 +17,14 @@ class TreeTabWidget(TabWidget):
     positioning of tabs according to tree structure.
     """
 
-    def __init__(self, win_id: int, parent:Any=None) -> None:
+    def __init__(self, win_id: int, parent:TreeTabWidget =None):
         # root of the tab tree, common for all tabs in the window
         self.tree_root = Node(None)
         super().__init__(win_id, parent)
 
     def get_tab_fields(self, idx: int) -> dict[str, Any]:
         """Add tree field data to normal tab field data."""
-        fields = super().get_tab_fields(idx)
+        fields: dict[str, Any] = super().get_tab_fields(idx)
 
         if len(self.tree_root.children) == 0:
             # Presumably the window is still being initialized
