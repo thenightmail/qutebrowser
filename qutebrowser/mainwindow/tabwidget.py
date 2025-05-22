@@ -39,7 +39,7 @@ class TabWidget(QTabWidget):
     MUTE_STRING = '[M] '
     AUDIBLE_STRING = '[A] '
 
-    def __init__(self, win_id: int, parent=None) -> None:
+    def __init__(self, win_id: int, parent: Optional[QWidget]=None) -> None:
         super().__init__(parent)
         self._tabbed_browser = parent
         bar = TabBar(win_id, self)
@@ -127,21 +127,21 @@ class TabWidget(QTabWidget):
         """
         if self._tab_title_update_disabled:
             return
-
-        if self._tabbed_browser.is_shutting_down:
+        if hasattr(self._tabbed_browser, "is_shutting_down") and getattr(self._tabbed_browser, "is_shutting_down", False):
             return
 
         assert idx != -1
         tab = self._tab_by_idx(idx)
         assert tab is not None
-        if tab.data.pinned:
-            fmt = config.cache['tabs.title.format_pinned']
-        else:
-            fmt = config.cache['tabs.title.format']
+        if hasattr(tab, 'data') and hasattr(tab.data, 'pinned'):
+            if tab.data.pinned:
+                fmt = config.cache['tabs.title.format_pinned']
+            else:
+                fmt = config.cache['tabs.title.format']
 
-        if (field is not None and
-                (fmt is None or ('{' + field + '}') not in fmt)):
-            return
+                if (field is not None and
+                    (fmt is None or ('{' + field + '}') not in fmt)):
+                    return
 
         def right_align(num):
             return str(num).rjust(len(str(self.count())))
@@ -410,7 +410,7 @@ class TabBar(QTabBar):
 
     new_tab_requested = pyqtSignal()
 
-    def __init__(self, win_id, parent=None):
+    def __init__(self, win_id: int, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self._win_id = win_id
         self._our_style = TabBarStyle()
