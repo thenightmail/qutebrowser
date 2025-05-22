@@ -28,7 +28,7 @@ from qutebrowser.utils import (message, usertypes, log, qtutils, urlutils,
 from qutebrowser.utils.usertypes import KeyMode
 from qutebrowser.misc import editor, guiprocess, objects, notree
 from qutebrowser.completion.models import urlmodel, miscmodels
-from qutebrowser.mainwindow import mainwindow, windowundo
+from qutebrowser.mainwindow import mainwindow, windowundo, tabbedbrowser, treetabbedbrowser
 
 
 class CommandDispatcher:
@@ -46,7 +46,7 @@ class CommandDispatcher:
         _tabbed_browser: The TabbedBrowser used.
     """
 
-    def __init__(self, win_id, tabbed_browser):
+    def __init__(self, win_id: int, tabbed_browser: Union[tabbedbrowser.TabbedBrowser, treetabbedbrowser.TreeTabbedBrowser]) -> None:
         self._win_id = win_id
         self._tabbed_browser = tabbed_browser
 
@@ -856,16 +856,17 @@ class CommandDispatcher:
         # close as many tabs as we can
         first_tab = True
         pinned_tabs_cleanup = False
+        pinned_tab_found = False
         for i, tab in enumerate(self._tabbed_browser.widgets()):
             if _to_close(i):
                 if pinned == 'close' or not tab.data.pinned:
                     self._tabbed_browser.close_tab(tab, new_undo=first_tab)
                     first_tab = False
                 else:
-                    pinned_tabs_cleanup = tab
+                    pinned_tab_found = True
 
         # Check to see if we would like to close any pinned tabs
-        if pinned_tabs_cleanup and pinned == 'prompt':
+        if pinned_tab_found and pinned == 'prompt':
             self._tabbed_browser.tab_close_prompt_if_pinned(
                 pinned_tabs_cleanup,
                 pinned == 'close',
@@ -2132,7 +2133,10 @@ class CommandDispatcher:
         self._ensure_tree_tabs()
         while count > 0:
             tab = self._current_widget()
-            self._tabbed_browser.cycle_hide_tab(tab.node)
+            if hasattr(self._tabbed_browser, 'cycle_hide_tab'):
+                self._tabbed_browser.cycle_hide_tab(tab.node)
+            else:
+                pass
             count -= 1
 
         self._tabbed_browser.widget.tree_tab_update()
