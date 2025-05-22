@@ -80,7 +80,7 @@ class TabWidget(QTabWidget):
         assert isinstance(bar, TabBar), bar
         return bar
 
-    def _tab_by_idx(self, idx: int) -> Optional[QWidget]:
+    def _tab_by_idx(self, idx: int) -> Optional[browsertab.AbstractTab]:
         """Get the tab at the given index."""
         tab = self.widget(idx)
         if tab is not None:
@@ -353,7 +353,7 @@ class TabWidget(QTabWidget):
         qtutils.ensure_valid(url)
         return url
 
-    def update_tab_favicon(self, tab: QWidget) -> None:
+    def update_tab_favicon(self, tab: browsertab.AbstractTab) -> None:
         """Update favicon of the given tab."""
         idx = self.indexOf(tab)
 
