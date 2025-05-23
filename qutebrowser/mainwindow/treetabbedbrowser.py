@@ -126,7 +126,7 @@ class TreeTabbedBrowser(TabbedBrowser):
         """Return the tab widget that can display a tree structure."""
         return TreeTabWidget(self._win_id, parent=self)
 
-    def _remove_tab(self, tab, *, add_undo=True, new_undo=True, crashed=False, recursive=False) -> None:
+    def _remove_tab(self, tab: browsertab.AbstractTab, *, add_undo: bool =True, new_undo: bool =True, crashed: bool =False, recursive: bool=False) -> None:
         """Handle children positioning after a tab is removed."""
         if not tab.url().isEmpty() and tab.url().isValid() and add_undo:
             self._add_undo_entry(tab, new_undo)
@@ -152,7 +152,7 @@ class TreeTabbedBrowser(TabbedBrowser):
             return
 
         node = tab.node
-        parent = node.parent
+        parent = node.parent or None # or some default value
         current_tab = self.current_tab()
 
         # Override tabs.select_on_remove behavior to be tree aware.
@@ -171,12 +171,19 @@ class TreeTabbedBrowser(TabbedBrowser):
             # "one" selected after closing tab "three". Switch to either the
             # current tab's previous sibling or its parent.
             if selection_behavior == QTabBar.SelectionBehavior.SelectLeftTab:
-                siblings = parent.children
-                rel_index = siblings.index(node)
-                if rel_index == 0:
-                    next_tab = parent.value
-                else:
-                    next_tab = siblings[rel_index-1].value
+                siblings = []
+                rel_index = -1
+                if parent is not None and hasattr(parent, 'children'):
+                    siblings = list(getattr(parent, 'children', []))
+                    try:
+                        rel_index = siblings.index(node)
+                        if rel_index != 0:
+                            prev_sibling = siblings[rel_index -1]
+                            next_tab = getattr(prev_sibling, 'value', None) if prev_sibling else None
+                        else:
+                            next_tab = parent.value if parent is not None else None
+                    except ValueError:
+                            pass
                 self.widget.setCurrentWidget(next_tab)
 
         if node.collapsed:
