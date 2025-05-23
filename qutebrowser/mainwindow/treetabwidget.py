@@ -17,7 +17,7 @@ class TreeTabWidget(TabWidget):
     positioning of tabs according to tree structure.
     """
 
-    def __init__(self, win_id: int, parent:TreeTabWidget =None):
+    def __init__(self, win_id: int, parent: TreeTabWidget =None):
         # root of the tab tree, common for all tabs in the window
         self.tree_root = Node(None)
         super().__init__(win_id, parent)
@@ -28,7 +28,7 @@ class TreeTabWidget(TabWidget):
 
         if len(self.tree_root.children) == 0:
             # Presumably the window is still being initialized
-            log.misc.vdebug(f"Tree root has no children. Are we starting up? fields={fields}")
+            log.misc.debug(f"Tree root has no children. Are we starting up? fields={fields}")
             return fields
 
         rendered_tree = self.tree_root.render()
@@ -81,7 +81,7 @@ class TreeTabWidget(TabWidget):
             # tabwidget/tabbbedbrowser. Or have the session manager add all
             # nodes to the tree uncollapsed initially and then go through and
             # collapse them.
-            log.misc.vdebug(
+            log.misc.debug(
                 "get_tab_fields() called with different amount of tabs in "
                 f"widget vs in the tree: difference={difference} "
                 f"tree={rendered_tree[1:]} tabs={tabs}"

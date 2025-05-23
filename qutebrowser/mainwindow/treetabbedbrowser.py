@@ -55,12 +55,12 @@ class _TreeUndoEntry(_UndoEntry):
             tab.node.parent.children = new_siblings
 
     @classmethod
-    def from_tab(
+    def _from_tab(
         cls,
         tab: browsertab.AbstractTab,
         idx: int,
         recursing: bool = False,
-    ) -> Union["_TreeUndoEntry", list["_TreeUndoEntry"]]:
+    ) -> Union["_TreeUndoEntry", list["_TreeUndoEntry"], None]:
         """Make a TreeUndoEntry from a Node."""
         node = tab.node
         url = node.value.url()
