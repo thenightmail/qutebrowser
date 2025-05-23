@@ -941,7 +941,7 @@ class TabbedBrowser(QWidget):
         if widget is None:
             return
 
-        log.modes.debug(f"Focus released, focusing {widget!r}")
+        # log.modes.debug(f"Focus released, focusing {widget!r}") unreachable
         widget.setFocus()
 
     @pyqtSlot()

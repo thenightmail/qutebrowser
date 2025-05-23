@@ -40,7 +40,6 @@ if TYPE_CHECKING:
     from qutebrowser.browser.webengine.webview import WebEngineView
     from qutebrowser.browser.webkit.webview import WebView
 
-from qutebrowser.mainwindow.treetabwidget import TreeTabWidget
 from qutebrowser.misc.notree import Node
 
 tab_id_gen = itertools.count(0)
