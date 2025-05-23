@@ -7,7 +7,7 @@
 import collections
 import dataclasses
 import functools
-from typing import Union, TypeVar as T
+from typing import Union, TypeVar as T, Any
 from qutebrowser.qt.core import pyqtSlot, QUrl
 
 from qutebrowser.config import config
@@ -80,7 +80,7 @@ class _TreeUndoEntry(_UndoEntry):
 
         pinned = node.value.data.pinned
         uid = node.uid
-        parent_uid = node.parent.uid
+        parent_uid = node.parent.uid if node.parent else None
         if recursing:
             # Recursively removed nodes will never have any existing children
             # to re-parent in the tree they are being added into, children
@@ -98,7 +98,7 @@ class _TreeUndoEntry(_UndoEntry):
             index=idx,
             pinned=pinned,
             uid=uid,
-            parent_node_uid=parent_uid,
+            parent_node_uid=int(parent_uid) if parent_uid else 0,
             children_node_uids=children,
             local_index=local_idx,
         )
@@ -114,9 +114,9 @@ class TreeTabbedBrowser(TabbedBrowser):
     """
 
     is_treetabbedbrowser = True
-    _undo_class = _TreeUndoEntry
+    _undo_class: Union[type[_UndoEntry], type[_TreeUndoEntry]] = _TreeUndoEntry
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._tree_tab_child_rel_idx = 0
         self._tree_tab_sibling_rel_idx = 0
@@ -124,7 +124,7 @@ class TreeTabbedBrowser(TabbedBrowser):
 
     def _create_tab_widget(self) -> TreeTabWidget:
         """Return the tab widget that can display a tree structure."""
-        return TreeTabWidget(self._win_id, parent=self)
+        return TreeTabWidget(self._win_id)
 
     def _remove_tab(self, tab: browsertab.AbstractTab, *, add_undo: bool =True, new_undo: bool =True, crashed: bool =False, recursive: bool=False) -> None:
         """Handle children positioning after a tab is removed."""
