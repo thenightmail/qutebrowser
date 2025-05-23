@@ -1063,7 +1063,7 @@ class AbstractTab(QWidget):
         if parent is not None and isinstance(parent, TreeTabWidget):
             self.node = notree.Node(self, parent=parent.tree_root)
         else:
-            self.node= notree.Node(self, parent=None)
+            self.node = notree.Node(self, parent=None)
 
         # If true, this tab has been requested to be removed (or is removed).
         self.pending_removal = False

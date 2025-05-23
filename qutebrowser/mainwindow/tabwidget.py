@@ -19,7 +19,7 @@ from qutebrowser.qt.gui import QIcon, QPalette, QColor
 from qutebrowser.utils import qtutils, objreg, utils, usertypes, log
 from qutebrowser.config import config, stylesheet
 from qutebrowser.misc import objects, debugcachestats
-from qutebrowser.browser.browsertab import AbstractTab, WebTabError
+from qutebrowser.browser import browsertab
 
 
 class TabWidget(QTabWidget):
@@ -39,7 +39,7 @@ class TabWidget(QTabWidget):
     MUTE_STRING = '[M] '
     AUDIBLE_STRING = '[A] '
 
-    def __init__(self, win_id: int, parent: Optional[QWidget]=None) -> None:
+    def __init__(self, win_id: int, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self._tabbed_browser = parent
         bar = TabBar(win_id, self)
@@ -80,11 +80,11 @@ class TabWidget(QTabWidget):
         assert isinstance(bar, TabBar), bar
         return bar
 
-    def _tab_by_idx(self, idx: int) -> Optional[AbstractTab]:
+    def _tab_by_idx(self, idx: int) -> Optional[browsertab.AbstractTab]:
         """Get the tab at the given index."""
         tab = self.widget(idx)
         if tab is not None:
-            assert isinstance(tab, AbstractTab), tab
+            assert isinstance(tab, browsertab.AbstractTab), tab
         return tab
 
     def set_tab_indicator_color(self, idx, color):
@@ -139,8 +139,7 @@ class TabWidget(QTabWidget):
             else:
                 fmt = config.cache['tabs.title.format']
 
-                if (field is not None and
-                    (fmt is None or ('{' + field + '}') not in fmt)):
+                if (field is not None and (fmt is None or ('{' + field + '}') not in fmt)):
                     return
 
         def right_align(num):
@@ -193,7 +192,7 @@ class TabWidget(QTabWidget):
                 fields['audio'] = TabWidget.AUDIBLE_STRING
             else:
                 fields['audio'] = ''
-        except WebTabError:
+        except browsertab.WebTabError:
             # Muting is only implemented with QtWebEngine
             fields['audio'] = ''
 
@@ -353,7 +352,7 @@ class TabWidget(QTabWidget):
         qtutils.ensure_valid(url)
         return url
 
-    def update_tab_favicon(self, tab: AbstractTab) -> None:
+    def update_tab_favicon(self, tab: browsertab.AbstractTab) -> None:  # type: ignore
         """Update favicon of the given tab."""
         idx = self.indexOf(tab)
 
@@ -410,7 +409,7 @@ class TabBar(QTabBar):
 
     new_tab_requested = pyqtSignal()
 
-    def __init__(self, win_id: int, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, win_id: int, parent=None) -> None:
         super().__init__(parent)
         self._win_id = win_id
         self._our_style = TabBarStyle()
