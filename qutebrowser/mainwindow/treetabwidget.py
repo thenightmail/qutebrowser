@@ -10,6 +10,7 @@ from qutebrowser.utils import log
 from qutebrowser.mainwindow.tabwidget import TabWidget
 from qutebrowser.qt.widgets import QWidget
 
+
 class TreeTabWidget(TabWidget):
     """Tab widget used in TabbedBrowser, with tree-functionality.
 

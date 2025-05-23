@@ -12,6 +12,7 @@ import dataclasses
 from typing import (cast, TYPE_CHECKING, Any, Optional, Union)
 from collections.abc import Iterable, Sequence, Callable
 
+from qutebrowser.mainwindow.treetabbedbrowser import TreeTabbedBrowser
 from qutebrowser.qt import machinery
 from qutebrowser.qt.core import (pyqtSignal, pyqtSlot, QUrl, QObject, QSizeF, Qt,
                           QEvent, QPoint, QRect, QTimer)
@@ -40,7 +41,7 @@ if TYPE_CHECKING:
     from qutebrowser.browser.webengine.webview import WebEngineView
     from qutebrowser.browser.webkit.webview import WebView
 
-from qutebrowser.misc.notree import Node
+from qutebrowser.misc import notree
 from qutebrowser.mainwindow.treetabwidget import TreeTabWidget
 tab_id_gen = itertools.count(0)
 _WidgetType = Union["WebView", "WebEngineView"]
@@ -530,7 +531,7 @@ class AbstractCaret(QObject):
     def __init__(self,
                  tab: 'AbstractTab',
                  mode_manager: modeman.ModeManager,
-                 parent: QWidget = None) -> None:
+                 parent: Union[QWidget, None] = None) -> None:
         super().__init__(parent)
         self._widget = cast(_WidgetType, None)
         self._mode_manager = mode_manager
@@ -622,7 +623,7 @@ class AbstractScroller(QObject):
     #: Used to set the special ' mark so the user can return.
     before_jump_requested = pyqtSignal()
 
-    def __init__(self, tab: 'AbstractTab', parent: QWidget = None):
+    def __init__(self, tab: 'AbstractTab', parent: Union[QWidget, None] = None):
         super().__init__(parent)
         self._tab = tab
         self._widget = cast(_WidgetType, None)
@@ -1037,7 +1038,7 @@ class AbstractTab(QWidget):
     def __init__(self, *, win_id: int,
                  mode_manager: 'modeman.ModeManager',
                  private: bool,
-                 parent: QWidget = None) -> None:
+                 parent: Union[QWidget, None] = None) -> None:
         utils.unused(mode_manager)  # needed for mypy
         self.is_private = private
         self.win_id = win_id
@@ -1060,9 +1061,9 @@ class AbstractTab(QWidget):
         self.backend: Optional[usertypes.Backend] = None
 
         if parent is not None and isinstance(parent, TreeTabWidget):
-            self.node = Node(self, parent=parent.tree_root)
+            self.node = notree.Node(self, parent=parent.tree_root)
         else:
-            self.node= Node(self, parent=None)
+            self.node= notree.Node(self, parent=None)
 
         # If true, this tab has been requested to be removed (or is removed).
         self.pending_removal = False

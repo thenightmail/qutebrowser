@@ -19,7 +19,7 @@ from qutebrowser.qt.gui import QIcon, QPalette, QColor
 from qutebrowser.utils import qtutils, objreg, utils, usertypes, log
 from qutebrowser.config import config, stylesheet
 from qutebrowser.misc import objects, debugcachestats
-from qutebrowser.browser import browsertab
+from qutebrowser.browser.browsertab import AbstractTab, WebTabError
 
 
 class TabWidget(QTabWidget):
@@ -80,11 +80,11 @@ class TabWidget(QTabWidget):
         assert isinstance(bar, TabBar), bar
         return bar
 
-    def _tab_by_idx(self, idx: int) -> Optional[browsertab.AbstractTab]:
+    def _tab_by_idx(self, idx: int) -> Optional[AbstractTab]:
         """Get the tab at the given index."""
         tab = self.widget(idx)
         if tab is not None:
-            assert isinstance(tab, browsertab.AbstractTab), tab
+            assert isinstance(tab, AbstractTab), tab
         return tab
 
     def set_tab_indicator_color(self, idx, color):
@@ -193,7 +193,7 @@ class TabWidget(QTabWidget):
                 fields['audio'] = TabWidget.AUDIBLE_STRING
             else:
                 fields['audio'] = ''
-        except browsertab.WebTabError:
+        except WebTabError:
             # Muting is only implemented with QtWebEngine
             fields['audio'] = ''
 
@@ -353,7 +353,7 @@ class TabWidget(QTabWidget):
         qtutils.ensure_valid(url)
         return url
 
-    def update_tab_favicon(self, tab: browsertab.AbstractTab) -> None:
+    def update_tab_favicon(self, tab: AbstractTab) -> None:
         """Update favicon of the given tab."""
         idx = self.indexOf(tab)
 
