@@ -12,7 +12,6 @@ import dataclasses
 from typing import (cast, TYPE_CHECKING, Any, Optional, Union)
 from collections.abc import Iterable, Sequence, Callable
 
-from qutebrowser.mainwindow.treetabbedbrowser import TreeTabbedBrowser
 from qutebrowser.qt import machinery
 from qutebrowser.qt.core import (pyqtSignal, pyqtSlot, QUrl, QObject, QSizeF, Qt,
                           QEvent, QPoint, QRect, QTimer)
@@ -42,7 +41,6 @@ if TYPE_CHECKING:
     from qutebrowser.browser.webkit.webview import WebView
 
 from qutebrowser.misc import notree
-from qutebrowser.mainwindow.treetabwidget import TreeTabWidget
 tab_id_gen = itertools.count(0)
 _WidgetType = Union["WebView", "WebEngineView"]
 
