@@ -183,7 +183,7 @@ class TreeTabbedBrowser(TabbedBrowser):
                         else:
                             next_tab = parent.value if parent is not None else None
                     except ValueError:
-                            pass
+                        pass
                 self.widget.setCurrentWidget(next_tab)
 
         if node.collapsed:

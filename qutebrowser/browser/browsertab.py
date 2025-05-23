@@ -41,7 +41,7 @@ if TYPE_CHECKING:
     from qutebrowser.browser.webkit.webview import WebView
 
 from qutebrowser.misc.notree import Node
-
+from qutebrowser.mainwindow.treetabwidget import TreeTabWidget
 tab_id_gen = itertools.count(0)
 _WidgetType = Union["WebView", "WebEngineView"]
 

@@ -4,10 +4,11 @@
 
 """Extension of TabWidget for tree-tab functionality."""
 
-from typing import Optional, Any
+from typing import Any, Optional
 from qutebrowser.misc.notree import Node
 from qutebrowser.utils import log
 from qutebrowser.mainwindow.tabwidget import TabWidget
+from qutebrowser.qt.widgets import QWidget
 
 class TreeTabWidget(TabWidget):
     """Tab widget used in TabbedBrowser, with tree-functionality.
@@ -16,7 +17,7 @@ class TreeTabWidget(TabWidget):
     positioning of tabs according to tree structure.
     """
 
-    def __init__(self, win_id: int, parent = None):
+    def __init__(self, win_id: int, parent: Optional[QWidget] = None):
         # root of the tab tree, common for all tabs in the window
         self.tree_root = Node(None)
         super().__init__(win_id, parent)
